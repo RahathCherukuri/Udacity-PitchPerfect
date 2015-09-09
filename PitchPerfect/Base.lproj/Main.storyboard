@@ -27,12 +27,6 @@
                                     <action selector="recordButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="alB-0S-QK3"/>
                                 </connections>
                             </button>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="recording" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UQR-zw-VJg">
-                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
-                                <fontDescription key="fontDescription" name="STHeitiSC-Light" family="Heiti SC" pointSize="17"/>
-                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HOL-8Q-lPd">
                                 <rect key="frame" x="-23" y="-15" width="46" height="30"/>
                                 <state key="normal" image="Stop Image">
@@ -42,6 +36,12 @@
                                     <action selector="stopButton:" destination="vXZ-lx-hvc" eventType="touchUpInside" id="Sp3-Fx-ifC"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Tap to record" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UQR-zw-VJg">
+                                <rect key="frame" x="0.0" y="-21" width="42" height="21"/>
+                                <fontDescription key="fontDescription" name="STHeitiSC-Light" family="Heiti SC" pointSize="17"/>
+                                <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.2156862745" green="0.50196078430000002" blue="0.72941176470000002" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
@@ -55,8 +55,8 @@
                         <variation key="default">
                             <mask key="subviews">
                                 <exclude reference="588-Yy-Wsf"/>
-                                <exclude reference="UQR-zw-VJg"/>
                                 <exclude reference="HOL-8Q-lPd"/>
+                                <exclude reference="UQR-zw-VJg"/>
                             </mask>
                             <mask key="constraints">
                                 <exclude reference="Cl0-tH-ngb"/>
@@ -70,8 +70,8 @@
                         <variation key="widthClass=compact">
                             <mask key="subviews">
                                 <include reference="588-Yy-Wsf"/>
-                                <include reference="UQR-zw-VJg"/>
                                 <include reference="HOL-8Q-lPd"/>
+                                <include reference="UQR-zw-VJg"/>
                             </mask>
                             <mask key="constraints">
                                 <include reference="Cl0-tH-ngb"/>
@@ -176,17 +176,17 @@
                                 <exclude reference="v2B-VH-oBw"/>
                             </mask>
                             <mask key="constraints">
+                                <exclude reference="h11-Dz-YX1"/>
+                                <exclude reference="70B-RC-SjK"/>
+                                <exclude reference="V94-Gq-ubG"/>
+                                <exclude reference="7mD-I5-w2e"/>
+                                <exclude reference="KqN-Sh-PMc"/>
                                 <exclude reference="21d-li-7b2"/>
                                 <exclude reference="2Of-DY-PXK"/>
                                 <exclude reference="3Bb-D4-Vsu"/>
                                 <exclude reference="91S-du-u9x"/>
-                                <exclude reference="7mD-I5-w2e"/>
-                                <exclude reference="KqN-Sh-PMc"/>
-                                <exclude reference="V94-Gq-ubG"/>
                                 <exclude reference="H6A-5h-p9D"/>
                                 <exclude reference="N8b-0r-30B"/>
-                                <exclude reference="70B-RC-SjK"/>
-                                <exclude reference="h11-Dz-YX1"/>
                             </mask>
                         </variation>
                         <variation key="widthClass=compact">
@@ -198,17 +198,17 @@
                                 <include reference="v2B-VH-oBw"/>
                             </mask>
                             <mask key="constraints">
+                                <include reference="h11-Dz-YX1"/>
+                                <include reference="70B-RC-SjK"/>
+                                <include reference="V94-Gq-ubG"/>
+                                <include reference="7mD-I5-w2e"/>
+                                <include reference="KqN-Sh-PMc"/>
                                 <include reference="21d-li-7b2"/>
                                 <include reference="2Of-DY-PXK"/>
                                 <include reference="3Bb-D4-Vsu"/>
                                 <include reference="91S-du-u9x"/>
-                                <include reference="7mD-I5-w2e"/>
-                                <include reference="KqN-Sh-PMc"/>
-                                <include reference="V94-Gq-ubG"/>
                                 <include reference="H6A-5h-p9D"/>
                                 <include reference="N8b-0r-30B"/>
-                                <include reference="70B-RC-SjK"/>
-                                <include reference="h11-Dz-YX1"/>
                             </mask>
                         </variation>
                     </view>
