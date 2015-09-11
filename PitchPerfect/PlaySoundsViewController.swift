@@ -32,11 +32,28 @@ class PlaySoundsViewController: UIViewController {
     }
     
     @IBAction func snailButton(sender: UIButton){
-        playAudio(0);
+            // playAudio(0);
+        
+
     }
     
     @IBAction func rabbitButton(sender: UIButton) {
-        playAudio(1);
+        // playAudio(1);
+        // For Reverb:
+        audioPlayer.stop();
+        audioEngine.stop();
+        audioEngine.reset();
+        var reverb = AVAudioUnitReverb();
+        reverb.wetDryMix = 50;
+        reverb.loadFactoryPreset(AVAudioUnitReverbPreset.Cathedral);
+        var audioPlayerNode = AVAudioPlayerNode();
+        audioEngine.attachNode(audioPlayerNode);
+        audioEngine.attachNode(reverb);
+        audioEngine.connect(audioPlayerNode, to: reverb, format: nil);
+        audioEngine.connect(reverb , to: audioEngine.outputNode, format: nil);
+        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil);
+        audioEngine.startAndReturnError(nil);
+        audioPlayerNode.play();
     }
     
     @IBAction func chipMunkButton(sender: UIButton) {
@@ -45,27 +62,6 @@ class PlaySoundsViewController: UIViewController {
     
     @IBAction func darthVaderButton(sender: UIButton) {
         playAudioWithVariablePitch(-1000)
-    }
-    
-    func playAudioWithVariablePitch(pitch: Float){
-        audioPlayer.stop();
-        audioEngine.stop();
-        audioEngine.reset();
-        
-        var audioPlayerNode = AVAudioPlayerNode();
-        audioEngine.attachNode(audioPlayerNode);
-        
-        var changePitchEffect = AVAudioUnitTimePitch();
-        changePitchEffect.pitch = pitch;
-        audioEngine.attachNode(changePitchEffect);
-        
-        audioEngine.connect(audioPlayerNode, to: changePitchEffect, format: nil);
-        audioEngine.connect(changePitchEffect, to: audioEngine.outputNode, format: nil);
-        
-        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil);
-        audioEngine.startAndReturnError(nil);
-        
-        audioPlayerNode.play();
     }
 
     @IBAction func stopButton(sender: UIButton) {
@@ -88,6 +84,27 @@ class PlaySoundsViewController: UIViewController {
             audioPlayer.rate = 2.0;
         }
         audioPlayer.play();
+    }
+    
+    func playAudioWithVariablePitch(pitch: Float){
+        audioPlayer.stop();
+        audioEngine.stop();
+        audioEngine.reset();
+        
+        var audioPlayerNode = AVAudioPlayerNode();
+        audioEngine.attachNode(audioPlayerNode);
+        
+        var changePitchEffect = AVAudioUnitTimePitch();
+        changePitchEffect.pitch = pitch;
+        audioEngine.attachNode(changePitchEffect);
+        
+        audioEngine.connect(audioPlayerNode, to: changePitchEffect, format: nil);
+        audioEngine.connect(changePitchEffect, to: audioEngine.outputNode, format: nil);
+        
+        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil);
+        audioEngine.startAndReturnError(nil);
+        
+        audioPlayerNode.play();
     }
     
     /*
