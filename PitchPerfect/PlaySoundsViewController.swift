@@ -12,6 +12,7 @@ import AVFoundation
 class PlaySoundsViewController: UIViewController {
 
     var audioPlayer: AVAudioPlayer!
+    var audioPlayer1: AVAudioPlayer!
     var receivedAudio: RecordedAudio!
     
     var audioEngine:AVAudioEngine!
@@ -21,7 +22,9 @@ class PlaySoundsViewController: UIViewController {
         super.viewDidLoad();
         // Do any additional setup after loading the view.
         audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil);
+        audioPlayer1 = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil);
         audioPlayer.enableRate = true;
+        audioPlayer1.enableRate = true;
         audioEngine = AVAudioEngine();
         audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
     }
@@ -33,7 +36,18 @@ class PlaySoundsViewController: UIViewController {
     
     @IBAction func snailButton(sender: UIButton){
             // playAudio(0);
+        audioPlayer.stop()
+        audioPlayer.currentTime = 0;
+        audioPlayer.play()
         
+        
+        let delay:NSTimeInterval = 0.1//100ms
+        var playtime:NSTimeInterval!
+        playtime = audioPlayer1.deviceCurrentTime + delay
+        audioPlayer1.stop()
+        audioPlayer1.currentTime = 0
+        audioPlayer1.volume = 0.8;
+        audioPlayer1.playAtTime(playtime)
 
     }
     
@@ -41,6 +55,7 @@ class PlaySoundsViewController: UIViewController {
         // playAudio(1);
         // For Reverb:
         audioPlayer.stop();
+        audioPlayer1.stop();
         audioEngine.stop();
         audioEngine.reset();
         var reverb = AVAudioUnitReverb();
@@ -66,6 +81,7 @@ class PlaySoundsViewController: UIViewController {
 
     @IBAction func stopButton(sender: UIButton) {
         audioPlayer.stop();
+        audioPlayer1.stop();
         audioEngine.stop();
     }
     
@@ -88,6 +104,7 @@ class PlaySoundsViewController: UIViewController {
     
     func playAudioWithVariablePitch(pitch: Float){
         audioPlayer.stop();
+        audioPlayer1.stop();
         audioEngine.stop();
         audioEngine.reset();
         

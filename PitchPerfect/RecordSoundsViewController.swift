@@ -11,9 +11,12 @@ import AVFoundation
 
 class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
-    @IBOutlet weak var recordingOutlet: UILabel!
+    @IBOutlet weak var recordingLabel: UILabel!
     @IBOutlet weak var stopButton: UIButton!
     @IBOutlet weak var recordButton: UIButton!
+    @IBOutlet weak var pauseButton: UIButton!
+    
+    var isInitialPlay: Bool!
     
     var audioRecorder:AVAudioRecorder!
     var recordedAudio:RecordedAudio!
@@ -24,9 +27,15 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
 
     }
     override func viewWillAppear(animated: Bool) {
-        recordingOutlet.text = "Tap to record";
-        stopButton.hidden = true;
+        println("In viewWillAppear");
+        recordingLabel.text = "Tap to record";
         recordButton.enabled = true;
+        stopButton.hidden = true;
+        pauseButton.enabled = true;
+        pauseButton.hidden = true;
+        isInitialPlay = true;
+        let image = UIImage(named: "record Image") as UIImage?
+        recordButton.setImage(image, forState: .Normal);
     }
 
     override func didReceiveMemoryWarning() {
@@ -36,40 +45,76 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
     
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
         if(flag) {
+                println("audioRecorderDidFinishRecording");
             recordedAudio = RecordedAudio(filePathUrl: recorder.url,title: recorder.url.lastPathComponent!);
             self.performSegueWithIdentifier("stopRecording", sender: recordedAudio);
         }
         else {
+            println("audioRecorderDidFinishRecording");
             //println("Recording button is not successful");
             recordButton.enabled = true;
             stopButton.hidden = true;
         }
     }
 
+    
+    
     @IBAction func recordButton(sender: UIButton) {
-        recordingOutlet.text = "recording in progress";
+        if (isInitialPlay != nil && isInitialPlay == true) {
+            println("In recordButton");
+            recordingLabel.text = "recording in progress";
+            recordButton.enabled = false;
+            stopButton.hidden = false;
+            pauseButton.hidden = false;
+            pauseButton.enabled = true;
+            isInitialPlay = false;
+            
+            let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
+            let recordingName = "my_audio.wav"
+            let pathArray = [dirPath, recordingName]
+            let filePath = NSURL.fileURLWithPathComponents(pathArray)
+            //println(filePath)
+            
+            var session = AVAudioSession.sharedInstance()
+            session.setCategory(AVAudioSessionCategoryPlayAndRecord, error: nil)
+            
+            audioRecorder = AVAudioRecorder(URL: filePath, settings: nil, error: nil)
+            audioRecorder.delegate = self;
+            audioRecorder.meteringEnabled = true
+            audioRecorder.prepareToRecord()
+            audioRecorder.record()
+        }
+        else if(isInitialPlay != nil && isInitialPlay == false) {
+            audioRecorder.record();
+            recordingLabel.text = "recording in progress";
+            recordButton.enabled = false;
+            stopButton.hidden = false;
+            pauseButton.enabled = true;
+            pauseButton.hidden = false;
+
+        }
+        
+    }
+    
+    
+    @IBAction func pauseButton(sender: UIButton) {
+        println("In pauseButton");
+        recordButton.enabled = true;
+//        pauseButton.hidden = true;
         stopButton.hidden = false;
-        recordButton.enabled = false;
+        pauseButton.enabled = false;
+//        stopButton.enabled = false;
         
-        let dirPath = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true)[0] as! String
-        let recordingName = "my_audio.wav"
-        let pathArray = [dirPath, recordingName]
-        let filePath = NSURL.fileURLWithPathComponents(pathArray)
-        //println(filePath)
-        
-        var session = AVAudioSession.sharedInstance()
-        session.setCategory(AVAudioSessionCategoryPlayAndRecord, error: nil)
-        
-        audioRecorder = AVAudioRecorder(URL: filePath, settings: nil, error: nil)
-        audioRecorder.delegate = self;
-        audioRecorder.meteringEnabled = true
-        audioRecorder.prepareToRecord()
-        audioRecorder.record()
+        recordingLabel.text = "Click to continue recording";
+        let image = UIImage(named: "start Image") as UIImage?
+        recordButton.setImage(image, forState: .Normal);
+        audioRecorder.pause();
     }
     
     @IBAction func stopButton(sender: UIButton) {
+        println("In stopButton");
         audioRecorder.stop();
-        recordingOutlet.text = "Recording Complete";
+        recordingLabel.text = "Recording Complete";
         var audioSession = AVAudioSession.sharedInstance()
         audioSession.setActive(false, error: nil)
     }
