@@ -31,11 +31,6 @@ class RecordSoundsViewController: UIViewController, AVAudioRecorderDelegate {
         let image = UIImage(named: "record Image") as UIImage?
         recordButton.setImage(image, forState: .Normal)
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
     
     // Delegate Method
     func audioRecorderDidFinishRecording(recorder: AVAudioRecorder!, successfully flag: Bool) {
