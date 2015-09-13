@@ -21,11 +21,11 @@ class PlaySoundsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad();
         // Do any additional setup after loading the view.
-        audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil);
-        audioPlayer1 = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil);
-        audioPlayer.enableRate = true;
-        audioPlayer1.enableRate = true;
-        audioEngine = AVAudioEngine();
+        audioPlayer = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        audioPlayer.enableRate = true
+        audioPlayer1 = AVAudioPlayer(contentsOfURL: receivedAudio.filePathUrl, error: nil)
+        audioPlayer1.enableRate = true
+        audioEngine = AVAudioEngine()
         audioFile = AVAudioFile(forReading: receivedAudio.filePathUrl, error: nil)
     }
 
@@ -34,41 +34,16 @@ class PlaySoundsViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func snailButton(sender: UIButton){
-            // playAudio(0);
-        audioPlayer.stop()
-        audioPlayer.currentTime = 0;
-        audioPlayer.play()
-        
-        
-        let delay:NSTimeInterval = 0.1//100ms
-        var playtime:NSTimeInterval!
-        playtime = audioPlayer1.deviceCurrentTime + delay
-        audioPlayer1.stop()
-        audioPlayer1.currentTime = 0
-        audioPlayer1.volume = 0.8;
-        audioPlayer1.playAtTime(playtime)
-
+    override func viewWillDisappear(animated: Bool) {
+        stopAllAudio()
+    }
+    
+    @IBAction func snailButton(sender: UIButton) {
+        playAudio(0)
     }
     
     @IBAction func rabbitButton(sender: UIButton) {
-        // playAudio(1);
-        // For Reverb:
-        audioPlayer.stop();
-        audioPlayer1.stop();
-        audioEngine.stop();
-        audioEngine.reset();
-        var reverb = AVAudioUnitReverb();
-        reverb.wetDryMix = 50;
-        reverb.loadFactoryPreset(AVAudioUnitReverbPreset.Cathedral);
-        var audioPlayerNode = AVAudioPlayerNode();
-        audioEngine.attachNode(audioPlayerNode);
-        audioEngine.attachNode(reverb);
-        audioEngine.connect(audioPlayerNode, to: reverb, format: nil);
-        audioEngine.connect(reverb , to: audioEngine.outputNode, format: nil);
-        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil);
-        audioEngine.startAndReturnError(nil);
-        audioPlayerNode.play();
+        playAudio(1)
     }
     
     @IBAction func chipMunkButton(sender: UIButton) {
@@ -78,50 +53,83 @@ class PlaySoundsViewController: UIViewController {
     @IBAction func darthVaderButton(sender: UIButton) {
         playAudioWithVariablePitch(-1000)
     }
+    
+    @IBAction func reverbButton(sender: UIButton) {
+        reverb(50,reverbPresent: AVAudioUnitReverbPreset.LargeChamber)
+    }
 
     @IBAction func stopButton(sender: UIButton) {
-        audioPlayer.stop();
-        audioPlayer1.stop();
-        audioEngine.stop();
+        stopAllAudio()
     }
     
     func playAudio(buttonClicked: Int){
-        audioPlayer.stop();
-        audioEngine.stop();
-        audioEngine.reset();
-        audioPlayer.currentTime = 0.0;
-        
-        if(buttonClicked == 0)
+        stopAndResetAudio()
+        if (buttonClicked == 0)
         {
-            audioPlayer.rate = 0.5;
+            audioPlayer.rate = 0.5
             
-        } else if(buttonClicked == 1) {
+        } else if (buttonClicked == 1) {
             
-            audioPlayer.rate = 2.0;
+            audioPlayer.rate = 2.0
         }
-        audioPlayer.play();
+        audioPlayer.play()
     }
     
-    func playAudioWithVariablePitch(pitch: Float){
-        audioPlayer.stop();
-        audioPlayer1.stop();
-        audioEngine.stop();
-        audioEngine.reset();
+    func playAudioWithVariablePitch(pitch: Float) {
+        var changePitchEffect = AVAudioUnitTimePitch()
+        changePitchEffect.pitch = pitch
+        playWithPitchOrReverb(changePitchEffect)
+    }
+    
+    func reverb(wetDryMix: Float,reverbPresent: AVAudioUnitReverbPreset) {
+        var audioUnitReverb = AVAudioUnitReverb()
+        audioUnitReverb.wetDryMix = wetDryMix
+        audioUnitReverb.loadFactoryPreset(reverbPresent)
+        playWithPitchOrReverb(audioUnitReverb)
+    }
+
+    func playWithPitchOrReverb(audioUnit: AVAudioUnit) {
+        stopAndResetAudio()
         
-        var audioPlayerNode = AVAudioPlayerNode();
-        audioEngine.attachNode(audioPlayerNode);
+        var audioPlayerNode = AVAudioPlayerNode()
+        audioEngine.attachNode(audioPlayerNode)
+        audioEngine.attachNode(audioUnit)
         
-        var changePitchEffect = AVAudioUnitTimePitch();
-        changePitchEffect.pitch = pitch;
-        audioEngine.attachNode(changePitchEffect);
+        audioEngine.connect(audioPlayerNode, to: audioUnit, format: nil)
+        audioEngine.connect(audioUnit, to: audioEngine.outputNode, format: nil)
         
-        audioEngine.connect(audioPlayerNode, to: changePitchEffect, format: nil);
-        audioEngine.connect(changePitchEffect, to: audioEngine.outputNode, format: nil);
+        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil)
+        audioEngine.startAndReturnError(nil)
         
-        audioPlayerNode.scheduleFile(audioFile, atTime: nil, completionHandler: nil);
-        audioEngine.startAndReturnError(nil);
-        
-        audioPlayerNode.play();
+        audioPlayerNode.play()
+    }
+    
+    func stopAndResetAudio() {
+        stopAllAudio()
+        audioEngine.reset()
+        audioPlayer.currentTime = 0.0
+        audioPlayer1.currentTime = 0.0
+    }
+    
+    func stopAllAudio() {
+        audioPlayer.stop()
+        audioPlayer1.stop()
+        audioEngine.stop()
+    }
+    
+    
+    @IBAction func echoButton(sender: UIButton) {
+        echo()
+    }
+    
+    func echo() {
+        stopAndResetAudio()
+        let delay:NSTimeInterval = 0.1//100ms
+        var playtime:NSTimeInterval!
+        playtime = audioPlayer1.deviceCurrentTime + delay
+        audioPlayer1.currentTime = 0
+        audioPlayer1.volume = 0.8
+        audioPlayer1.playAtTime(playtime)
     }
     
     /*
